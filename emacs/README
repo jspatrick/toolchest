@@ -1,0 +1,22 @@
+#John Patrick's emacs configuration.
+
+#To use, place .emacs.d in home directory
+#this assumes there is a '/python' directory in the homedir
+
+cd ~/.emacs.d/python/installed/pinard-Pymacs-5989046;
+python pppp -C ppppconfig.py Pymacs.py.in pppp.rst.in pymacs.el.in pymacs.rst.in contrib tests;
+python setup.py build;
+cp build/lib/Pymacs.py $HOME/python/;
+
+cd ~/.emacs.d/python/installed/agr-ropemacs-7af544334b85;
+python setup.py build;
+cp -r build/lib/ropemacs $HOME/python/;
+
+cd ~/.emacs.d/python/installed/rope-0.9.3;
+python setup.py build;
+cp -r build/lib/rope $HOME/python/;
+
+cd ~/.emacs.d/python/installed/ropemode-0.1-rc2;
+python setup.py build;
+cp -r build/lib/ropemode $HOME/python;
+

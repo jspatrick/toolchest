@@ -1,0 +1,202 @@
+* -*- outline-minor -*- 
+
+Version: 1.9962.
+
+* Make `widget-field-add-space' work on 20.3.
+
+* See if `customize-save-variable' should be used in other places.
+
+* Send bug report for `previous-overlay-change' in Emacs.
+
+* Write a mouse-1 vs. mouse-2 letter to custom, rms, and pretester lists.
+
+* w3:
+
+RET and mouse-2 doesn't work in editable fields.
+
+* Make TAB faster.
+
+Use `next-overlay-change'.
+
+* Push RET on [toggle] moves point to before the toggle.
+
+* Documentation:
+
+** Document `widget-get-indirect'.
+
+** Document `widget-convert-button' and `widget-convert-text'.
+
+** Document `widget-map-buttons'.
+
+** Document :complete :complete-function
+
+** Document `widget-complete', `widget-complete-field', `widget-complete-
+
+** Document `visibility' and `documentation-string' widgets.
+
+** Document :documentation-shown keyword.
+
+** Document :documentation-indent keyword.
+
+** Undocument :widget-doc keyword.
+
+** Document `hook' widget.
+
+** Document `color' and `face' sexp widgets.
+
+** Document `coding-system' sexp widget.
+
+** Document `emacs-library-link', `emacs-commentary-link', and
+   `file-link' widgets.  
+
+** Document `variable-link' and `function-link' widgets.
+
+* Don't save options whose value is identical to its standard setting, 
+  iff :require was specified.
+
+Perhaps make this an option, with values `never', `always', and
+`when-has-require'.  
+
+* Add support for context sensitive menu.
+
+`widget-keymap' should overwrite [(control down-mouse-3)] on Emacs and
+button3 on XEmacs.
+
+The function should invoke the first of the following that applies:
+
+- The `:button-menu' widget property if non-nil and the mouse is above
+  a button.  
+
+- The `:action' widget property if non-nil and the mouse is above a
+  button, and the `:mouse-down-action' property gives non-nil when called.
+
+- The `:field-menu' widget property if non-nil and the mouse is above
+  a field.  
+
+- The `:menu' widget property above a widget.
+
+- `mouse-major-mode-menu' on Emacs.
+
+- `popup-mode-menu' on XEmacs.
+
+The value of `:button-menu', `:field-menu', and `:menu' widget
+properties should be a menu specification in easy-menu format, or a
+function returning such a specification.
+
+* Move point to beginning of option when you unhide it.
+
+Try to make an area visible when unhiding.
+
+In general: Move point to mouse when you click.
+
+* Don't change sexp widgets (i.e. :custom-hidden) from cus-edit.el.  
+
+Move the changes to wid-edit.el 
+
+* Add command/option to activate/deactivate mouse help in Emacs.
+
+* `RET' should imply `set' in the last field, instead of entering the mini-buf.
+
+In the other field, it should validate and move to the next field.
+
+Pushing the tag should enter the minibuffer.
+
+* Create indirect child widget for making aliases and recursive definitions.
+
+(define-widget 'foo 'default
+  "Foo"
+  :tag "Foo"
+  :format "%v"
+  :offset 5
+  :match 'foo-match 
+  :value-get 'foo-value-get
+  :value-create 'foo-value-create
+  :value-delete 'widget-children-value-delete)
+
+(defun foo-match (widget value)
+  (or (symbolp value)
+      (stringp value)
+      (and (listp value)
+	   (eq (length value) 2)
+	   (integerp (nth 0 value))
+	   (foo-match nil (nth 1 value)))))
+
+(defun foo-value-get (widget)
+  (widget-value (car (widget-get widget :children))))
+
+(defun foo-value-create (widget)
+  (widget-put widget :children 
+	      (list (widget-create-child-and-convert
+		     widget '(choice string
+				     symbol
+				     (list :value (0 nil)
+					   integer foo))
+		     :value (widget-get widget :value)
+		     :tag (widget-get widget :tag)))))
+  
+(defcustom xyz nil
+  "xyz"
+  :type 'foo)
+
+
+* Lazier loading.
+
+Print all group members to `cus-load.el'.
+
+Also store `where' for all customization options.
+
+Never load `where' for menus.
+
+Load `where' for buffers.
+
+* A `display-table' widget.
+
+* Better variable and symbol widgets.
+
+- create variable-symbol
+
+- variable should be
+
+  a) a radio with the :options as `function-item' and a
+     variable-symbol. 
+
+  b) just variable-symbol if there are no :options.
+
+- create function-symbol
+
+- function should be
+
+  a) a radio with the :options as `function-item' and a 
+     lambda-expression, function-symbol, and sexp entries.
+
+  b) a choice between lambda-expression, function-symbol, and sexp if
+     there is no :options.
+
+(define-widget 'lambda-expression 'list
+  "A lambda expression."
+  :tag "Lambda"
+  :format "%{%t%}: %v"
+  :args '((const :format "" lambda)
+	  (repeat :format "\n%v%i\n" (symbol :format "%v"))
+	  (option (string :format "%t:%n%v" :tag "Documentation"))
+	  (option (list :format "%v" 
+			(const :format "" interactive)
+			(choice :inline t
+				:tag "Interactive" 
+				(const :inline t
+				       :tag "no argument" nil)
+				(string :menu-tag "format string" 
+					:format "%v")
+				(sexp :format "%v"
+				      :menu-tag "form"
+				      :value (list)))))
+	  (repeat :format "%v%i\n" :inline t (sexp :format "%v"))))
+
+(define-widget 'function 'choice
+  "A function."
+  :args '((function-symbol :tag "Symbol" :format "%v")
+	  (lambda-expression :format "%v")
+	  (sexp :menu-tag "Other" :format "%v")))
+
+* Implement everything in the wishlists :-).
+

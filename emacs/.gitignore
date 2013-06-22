@@ -1,0 +1,7 @@
+*.elc
+*.*~
+*.pyc
+*.rope*
+ac-comphist.dat
+session.*
+python/virtualpy
