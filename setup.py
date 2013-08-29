@@ -44,9 +44,11 @@ class EnvironmentPredicate(object):
         
 link_predicates = {'~/.spAliases': EnvironmentPredicate('HOST', expectedValue='shark257.spimageworks.com')}
     
-def expandedPath(path):
-    return os.path.expanduser(os.path.expandvars(path))
 
+def full_path(path):
+    p = os.path.expanduser(os.path.expandvars(path))
+    p = os.path.abspath(p)
+    return p
 
 def moveToBackup(filepath, backupToken = 'bak'):
     """
@@ -69,8 +71,8 @@ def moveToBackup(filepath, backupToken = 'bak'):
 def makeLinks():    
     for target, link in symlinks.iteritems():
 
-        target = expandedPath(target)
-        link = expandedPath(link)
+        target = full_path(target)
+        link = full_path(link)
         if not os.path.exists(target):
             raise RuntimeError("target %s does not exist" % target)
         _logger.info("Processing %s -> %s" % (link, target))        
@@ -95,9 +97,22 @@ def makeLinks():
             
         os.symlink(target, link)
 
-        
+def setupJedi():    
+    path = os.environ.get('PATH', '').split(':')
+    if toolchest_dir not in path:
+        path.insert(0, toolchest_dir)
+        os.environ['PATH'] = ':'.join(path)
+ 
+    jedi_path = os.path.join(toolchest_dir, 'emacs/elpa/jedi-20130714.1415/')
+    os.chdir(jedi_path)
+    p = subprocess.Popen('make requirements', stdout=subprocess.PIPE, shell=True)
+    print "seting up jedi - this requires an internet connection..."
+    print p.communicate()
+
+
 def main():
     makeLinks()
+    setupJedi()
 
 if __name__ == '__main__':
     main()
