@@ -1,3 +1,4 @@
+
 ;;;;;;;;;John Patrick's emacs config file;;;;;;;;;;
 ; add ~/.emacs.d directory to load-path
 (add-to-list 'load-path "~/.emacs.d")
@@ -125,6 +126,10 @@
 
 
 ;;--------------------PYTHON--------------------
+(autoload 'jedi:setup "jedi" nil t)
+(setq jedi:setup-keys t)
+(setq jedi:complete-on-dot t)
+(add-hook 'python-mode-hook 'jedi:setup)
 ;(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 ;(require 'python-mode)
 
@@ -217,8 +222,7 @@
 
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
-(ac-config-default)
- 
+(ac-config-default) 
 (global-auto-complete-mode t)
 
 
