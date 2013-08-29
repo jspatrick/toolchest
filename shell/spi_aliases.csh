@@ -29,3 +29,5 @@ alias spPyComD "cd /shots/spi/home/dev/jspatrick/python/common"
 
 alias spJ "source $HOME/spi_jump.csh;"
 
+alias vcci_force "/shots/spi/home/bin/common/vcci"
+alias vcci "/shots/cl2/home/bin/common/vcci_shy"

@@ -13,8 +13,8 @@
 (package-initialize)
 
 ;;colors
-(load-theme 'solarized-dark t)
-
+;(load-theme 'solarized-dark t)
+(load-theme 'monokai t)
 
 ;OSX key mods
 (setq mac-option-key-is-meta nil)
@@ -50,8 +50,6 @@
 (set-clipboard-coding-system (quote x-ctext-unix))
 (setq x-select-enable-clipboard t)
 
-;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-
 ;; Supress the GNU startup message
 (setq inhibit-startup-message t)
 
@@ -83,6 +81,23 @@
 (require `linum)
 (global-linum-mode 1)
 
+;;--------------------XML--------------------
+(defun nxml-mode-additional-keys ()
+    "Key bindings to add to `nxml-mode'."
+    (require 'sgml-mode)
+    (define-key nxml-mode-map (kbd "M-/") 'nxml-complete)
+    (define-key nxml-mode-map (kbd "\t") 'sgml-indent-line)
+    )
+
+(add-hook
+ 'nxml-mode-hook
+ 'nxml-mode-additional-keys
+)
+
+(require 'sgml-mode)
+(setq auto-mode-alist
+      (append '(("\\.xml" . sgml-mode))
+              auto-mode-alist))
 
 
 ;;--------------------MAIL---------------------
@@ -104,26 +119,30 @@
 (setq org-agenda-files (list "~/todo.org"))
 
 
+
+;;--------------------EPC--------------------
+(require 'epc)
+
+
 ;;--------------------PYTHON--------------------
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(require 'python-mode)
-
-
+;(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+;(require 'python-mode)
 
 ;;rope for autocompletion and refactoring
-(require 'pymacs)
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-(pymacs-load "ropemacs" "rope-")
-(pymacs-exec  "import rope.base.project;rope.base.project.Project('/shots/cl2/home/dev/jspatrick/maya2013_prod/python/common/')")
-(rope-open-project "/shots/cl2/home/dev/jspatrick/maya2013_prod/python/common/")
+;; (require 'pymacs)
+;; (autoload 'pymacs-apply "pymacs")
+;; (autoload 'pymacs-call "pymacs")
+;; (autoload 'pymacs-eval "pymacs" nil t)
+;; (autoload 'pymacs-exec "pymacs" nil t)
+;; (autoload 'pymacs-load "pymacs" nil t)
 
-(setq ropemacs-enable-autoimport t)
-;rope shortcuts
-(define-key ropemacs-local-keymap "\M-?" 'rope-code-assist)
+;; (pymacs-load "ropemacs" "rope-")
+;; (pymacs-exec  "import rope.base.project;rope.base.project.Project('/shots/cl2/home/dev/jspatrick/maya2013_prod/python/common/')")
+;; (rope-open-project "/shots/cl2/home/dev/jspatrick/maya2013_prod/python/common/")
+
+;; (setq ropemacs-enable-autoimport t)
+;; ;rope shortcuts
+;; (define-key ropemacs-local-keymap "\M-?" 'rope-code-assist)
 
 
 ;;flymake error checking
@@ -202,22 +221,6 @@
  
 (global-auto-complete-mode t)
 
-
-
-;;--------------------MEL--------------------
-(autoload 'mel-mode "mel-mode" "Mel editting mode." t)
-(add-hook
- 'mel-mode-hook
- (lambda ()
-   (require 'etom)
-   (setq etom-default-host "localhost")
-   (setq etom-default-port 2222)
-   (local-set-key (kbd "C-c C-r") 'etom-send-region)
-   (local-set-key (kbd "C-c C-c") 'etom-send-buffer)
-   (local-set-key (kbd "C-c C-l") 'etom-send-buffer)
-   (local-set-key (kbd "C-c C-z") 'etom-show-buffer)))
-(setq c-default-style "linux"
-          c-basic-offset 4)
 
 ;--------------------Other--------------------
 ;yaml mode
@@ -367,7 +370,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(send-mail-function (quote smtpmail-send-it)))
+ '(send-mail-function (quote smtpmail-send-it))
+ '(smtpmail-smtp-server "localhost")
+ '(smtpmail-smtp-service 25))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -2,7 +2,7 @@
 
   ;;-------------CUE3 mode!
 (require 'cue3)
-(setq cue3-search-history (cons "cl2-.*((s|z|plate)render|lfxprep|chopit|convert|split|sceneprep|jspatrick)" cue3-search-history))
+(setq cue3-search-history (cons "kil-.*((s|z|plate)render|lfxprep|chopit|convert|split|sceneprep|jspatrick)" cue3-search-history))
 
 
 ;; Commands for working with MEL files
@@ -12,7 +12,7 @@
  (grep "grep -n -e \"[[:space:]]proc[[:space:]]\" *.mel"))
 
 (defvar maya-version-by-show 
-  '(("htr" . "2012") ("smf" . "2009") ("cl2" . "2013"))
+  '(("htr" . "2012") ("smf" . "2009") ("cl2" . "2013") ("kil" . "2013"))
   "show versions")
 
 (defvar maya-version 
@@ -20,7 +20,7 @@
   "Maya version used")
 
 (defvar current-show
-  "cl2"
+  "kil"
   "The show Im working on")
 
 (defun get-maya-version(&optional show)
