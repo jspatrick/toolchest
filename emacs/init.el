@@ -1,11 +1,30 @@
-
 ;;;;;;;;;John Patrick's emacs config file;;;;;;;;;;
+
 ; add ~/.emacs.d directory to load-path
 (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
+;;--------------------global settings--------------------
 ;; Am i at work?  some things will need to be configured differently if so
-(defvar am-i-at-work (eq system-type 'gnu/linux) "am I at work?")
+(defvar am-i-at-work 
+  (eq system-type 'gnu/linux)
+  "am I at work?")
+
+(defvar maya-python-interpreter 
+  (expand-file-name "~/virtual_mayapy/bin/python")
+  "The python interpreter to use when using flymake, jedi, etc on 
+   a maya file")
+
+(defvar standard-python-interpreter
+  (expand-file-name "~/virtual_mayapy/bin/python")
+  "The python interpreter to use when using flymake, jedi, etc on 
+   a standard file")
+
+(defvar maya-pylint-cmd
+  (concat (file-name-directory maya-python-interpreter)
+          "epylint")
+  "The pylint binary to use"
+)
 
 ;;Marmalade package mgr
 (require 'package)
@@ -82,6 +101,8 @@
 (require `linum)
 (global-linum-mode 1)
 
+
+
 ;;--------------------XML--------------------
 (defun nxml-mode-additional-keys ()
     "Key bindings to add to `nxml-mode'."
@@ -130,26 +151,15 @@
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
 (add-hook 'python-mode-hook 'jedi:setup)
-;(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-;(require 'python-mode)
 
-;;rope for autocompletion and refactoring
-;; (require 'pymacs)
-;; (autoload 'pymacs-apply "pymacs")
-;; (autoload 'pymacs-call "pymacs")
-;; (autoload 'pymacs-eval "pymacs" nil t)
-;; (autoload 'pymacs-exec "pymacs" nil t)
-;; (autoload 'pymacs-load "pymacs" nil t)
+(if am-i-at-work
+    (setq jedi:server-command
+      '(maya-python-interpreter 
+        (expand-file-name "elpa/jedi-20130714.1415/jediepcserver.py"))
+      )
+  )
 
-;; (pymacs-load "ropemacs" "rope-")
-;; (pymacs-exec  "import rope.base.project;rope.base.project.Project('/shots/cl2/home/dev/jspatrick/maya2013_prod/python/common/')")
-;; (rope-open-project "/shots/cl2/home/dev/jspatrick/maya2013_prod/python/common/")
-
-;; (setq ropemacs-enable-autoimport t)
-;; ;rope shortcuts
-;; (define-key ropemacs-local-keymap "\M-?" 'rope-code-assist)
-
-
+(define-key python-mode-map (kbd "C-c g") 'jedi:goto-definition)
 ;;flymake error checking
 (when (load "flymake" t)
   (defun flymake-pylint-init ()
@@ -158,72 +168,40 @@
             (local-file (file-relative-name
                          temp-file
                          (file-name-directory buffer-file-name))))
-           (list "epylint" (list local-file))))
+       
+           (list maya-pylint-cmd
+                 (list local-file))))
 
        (add-to-list 'flymake-allowed-file-name-masks
                 '("\\.py\\'" flymake-pylint-init)))
 
-;;display flymake errors in minibuffer
-(require 'flymake-cursor)
-
-; this get called after python mode is enabled
-(defun py-outline-level ()
-  (let (buffer-invisibility-spec)
-    (save-excursion
-      (skip-chars-forward "    ")
-      (current-column))))
-
-(defun my-python-outline-hook ()
-  ; outline uses this regexp to find headers. I match lines with no indent and indented "class"
-  ; and "def" lines.
-  ;(setq outline-regexp "[^ \t]\\|[ \t]*\\(def\\|class\\) ")
-  (setq outline-regexp "[ \t]*\\(def\\|class\\|@\\) ")
-  ; enable our level computation
-  (setq outline-level 'py-outline-level)
-  ; do not use their \C-c@ prefix, too hard to type. Note this overides some bindings.
-  (setq outline-minor-mode-prefix "\C-t")
-  ; turn on outline mode
-  (outline-minor-mode t)
-  ; initially hide all but the headers
-  ;(hide-body)
-  ; make paren matches visible
-  (show-paren-mode 1)
-)
-
-;; code folding
-(add-hook 'python-mode-hook 'my-python-outline-hook)
-; this gets called by outline to deteremine the level. Just use the length of the whitespace
+;; To avoid having to mouse hover for the error message, these functions make flymake error messages
+;; appear in the minibuffer
+(defun show-fly-err-at-point ()
+  "If the cursor is sitting on a flymake error, display the message in the minibuffer"
+  (require 'cl)
+  (interactive)
+  (let ((line-no (line-number-at-pos)))
+    (dolist (elem flymake-err-info)
+      (if (eq (car elem) line-no)
+      (let ((err (car (second elem))))
+        (message "%s" (flymake-ler-text err)))))))
 
 
-; Outline-minor-mode key map
- (define-prefix-command 'cm-map nil "Outline-")
- ; HIDE
- (define-key cm-map "q" 'hide-sublevels)    ; Hide everything but the top-level headings
- (define-key cm-map "t" 'hide-body)         ; Hide everything but headings (all body lines)
- (define-key cm-map "o" 'hide-other)        ; Hide other branches
- (define-key cm-map "c" 'hide-entry)        ; Hide this entry's body
- (define-key cm-map "l" 'hide-leaves)       ; Hide body lines in this entry and sub-entries
- (define-key cm-map "d" 'hide-subtree)      ; Hide everything in this entry and sub-entries
- ; SHOW
- (define-key cm-map "a" 'show-all)          ; Show (expand) everything
- (define-key cm-map "e" 'show-entry)        ; Show this heading's body
- (define-key cm-map "i" 'show-children)     ; Show this heading's immediate child sub-headings
- (define-key cm-map "k" 'show-branches)     ; Show all sub-headings under this heading
- (define-key cm-map "s" 'show-subtree)      ; Show (expand) everything in this heading & below
- ; MOVE
- (define-key cm-map "u" 'outline-up-heading)                ; Up
- (define-key cm-map "n" 'outline-next-visible-heading)      ; Next
- (define-key cm-map "p" 'outline-previous-visible-heading)  ; Previous
- (define-key cm-map "f" 'outline-forward-same-level)        ; Forward - same level
- (define-key cm-map "b" 'outline-backward-same-level)       ; Backward - same level
- (global-set-key "\M-o" cm-map)
+(add-hook 'python-mode-hook 'flymake-mode)
+(add-hook 'post-command-hook 'show-fly-err-at-point)
 
 
-
+;--------------------AUTO COMPLETE--------------------
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
-(ac-config-default) 
+(ac-config-default)
+(setq ac-use-fuzzy nil)
+(setq ac-delay 0.1)
+(setq ac-quick-help-delay 1.0)
+(setq ac-show-menu-immediately-on-auto-complete t)
 (global-auto-complete-mode t)
+
 
 
 ;--------------------Other--------------------
@@ -344,8 +322,8 @@
 (ffap-bindings)
 (global-set-key (kbd "C-c f") 'ffap-other-window)
 (global-set-key (kbd "M-a") 'jp-insert-setAttr)
+(global-set-key (kbd "C-<tab>") 'ac-start)
 
-;; Set some keys
 (global-set-key (kbd "C-c 3") 'comment-region)
 (global-set-key (kbd "C-c #") 'uncomment-region)
 

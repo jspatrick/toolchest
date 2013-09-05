@@ -1,4 +1,14 @@
 #!/usr/bin/python
+"""
+Install my dev setup
+ - emacs config
+ - virtual_env for emacs
+ - jedi setup for emacs
+ - tools/binaries
+ - shell scripts
+ - aliases
+"""
+
 import os, logging, shutil, sys
 import subprocess
 
@@ -6,14 +16,15 @@ logging.basicConfig(level=logging.INFO)
 _logger = logging.getLogger("ToolchestSetup")
 
 def thisDir():
-    if not __file__:
-        cwd = os.getcwd()
-        testval = lambda x: x
-        thisFile = sys.modules[test.__module__].__file__        
-    else:
-        thisFile = os.path.abspath(__file__)
+    module = sys.modules.get(__name__, None)
+    if hasattr(module, '__file__'):
+        return os.path.dirname(os.path.abspath(__file__))
+
+    cwd = os.getcwd()
+    if not cwd.endswith('toolchest'):
+        raise RuntimeError("Cannot determine current directory")
         
-    return os.path.dirname(thisFile)
+    return cwd
 
     
 toolchest_dir = thisDir()
@@ -99,5 +110,6 @@ def makeLinks():
 def main():
     makeLinks()
 
-if __name__ == '__main__':
-    main()
+main()
+    
+        
