@@ -154,12 +154,11 @@
 
 (if am-i-at-work
     (setq jedi:server-command
-      '(maya-python-interpreter 
+      (list maya-python-interpreter 
         (expand-file-name "elpa/jedi-20130714.1415/jediepcserver.py"))
       )
   )
-
-(define-key python-mode-map (kbd "C-c g") 'jedi:goto-definition)
+(message jedi:server-command)
 ;;flymake error checking
 (when (load "flymake" t)
   (defun flymake-pylint-init ()
@@ -188,7 +187,6 @@
         (message "%s" (flymake-ler-text err)))))))
 
 
-(add-hook 'python-mode-hook 'flymake-mode)
 (add-hook 'post-command-hook 'show-fly-err-at-point)
 
 
@@ -221,7 +219,7 @@
                 ("\\.C$" . c++-mode)
                 ("\\.cpp$" . c++-mode)
                 ("\\.tcc$" . c++-mode)
-                ("\\.mel$"  . mel-mode)
+                ("\\.mel$"  . c++-mode)
                 ("\\.c[+][+]$" . c++-mode))
               auto-mode-alist))
 
