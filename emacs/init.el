@@ -364,7 +364,7 @@
 ;; load imageworks stuff if at imageworks
 (if am-i-at-work
     (load "imageworks"))
-
+(load "my_tools")
 ; run in server mode, so new requests can use 'emacsclient' to visit files in current session
 ;;(server-start)
 

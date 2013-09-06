@@ -20,6 +20,7 @@ toolchest_dir = thisDir()
 
 symlinks = {os.path.join(toolchest_dir, 'emacs'): '~/.emacs.d',
             os.path.join(toolchest_dir, 'shell', 'aliases.csh'): '~/.aliases',
+            os.path.join(toolchest_dir, 'shell', 'aliases.bash'): '~/.aliases',
             os.path.join(toolchest_dir, 'shell', 'spi_aliases.csh'): '~/.spi_aliases',
             os.path.join(toolchest_dir, 'shell', 'spi_jump.csh'): '~/spi_jump.csh',
             os.path.join(toolchest_dir, 'shell', 'set_python_path.csh'): '~/set_python_path.csh'
@@ -42,7 +43,12 @@ class EnvironmentPredicate(object):
         return True
         
         
-link_predicates = {'~/.spAliases': EnvironmentPredicate('HOST', expectedValue='shark257.spimageworks.com')}
+link_predicates = {os.path.join(toolchest_dir, 'shell', 'spi_aliases.csh'): 
+                       EnvironmentPredicate('HOST', expectedValue='shark257.spimageworks.com'),
+                   os.path.join(toolchest_dir, 'shell', 'aliases.csh'):
+                       EnvironmentPredicate('SHELL', expectedValue='/bin/csh'),
+                   os.path.join(toolchest_dir, 'shell', 'aliases.bash'):
+                       EnvironmentPredicate('SHELL', expectedValue='/bin/bash')}
     
 
 def full_path(path):
@@ -69,6 +75,7 @@ def moveToBackup(filepath, backupToken = 'bak'):
 
     
 def makeLinks():    
+
     for target, link in symlinks.iteritems():
 
         target = full_path(target)
@@ -78,11 +85,15 @@ def makeLinks():
         _logger.info("Processing %s -> %s" % (link, target))        
         
         #check existing predicates
+
         pred = link_predicates.get(target, None)
-        if pred and not pred():
-            _logger.info("Skipping %s" % target)
-            continue
-        
+        if pred is not None:
+            if not pred():
+                _logger.info("Skipping %s" % target)
+                continue
+        else:
+            print "No predicate for %s" % link
+
         #if the link exists but is not pointing to target...        
         #os.path.exists is false for bad simlinks, so also check if it's a link
         if os.path.exists(link) or os.path.islink(link):
