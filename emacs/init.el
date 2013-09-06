@@ -150,15 +150,17 @@
 (autoload 'jedi:setup "jedi" nil t)
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
-(add-hook 'python-mode-hook 'jedi:setup)
+(add-hook 'python-mode-hook (lambda () 
+                              (jedi:setup)
+                              (if am-i-at-work
+                                  (setq jedi:server-command
+                                        (list maya-python-interpreter 
+                                              (expand-file-name "elpa/jedi-20130714.1415/jediepcserver.py"))
+                                        )
+                                )
+                              ))
 
-(if am-i-at-work
-    (setq jedi:server-command
-      (list maya-python-interpreter 
-        (expand-file-name "elpa/jedi-20130714.1415/jediepcserver.py"))
-      )
-  )
-(message jedi:server-command)
+
 ;;flymake error checking
 (when (load "flymake" t)
   (defun flymake-pylint-init ()
