@@ -155,12 +155,12 @@
                               (if am-i-at-work
                                   (setq jedi:server-command
                                         (list maya-python-interpreter 
-                                              (expand-file-name "elpa/jedi-20130714.1415/jediepcserver.py"))
+                                              (expand-file-name "~/.emacs.d/elpa/jedi-20130714.1415/jediepcserver.py"))
                                         )
                                 )
                               ))
 
-
+(message "%s" package-alist)
 ;;flymake error checking
 (when (load "flymake" t)
   (defun flymake-pylint-init ()
