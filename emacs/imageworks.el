@@ -1,9 +1,5 @@
 ;;----------SPI STUFF-------------------
 
-  ;;-------------CUE3 mode!
-(require 'cue3)
-(setq cue3-search-history (cons "kil-.*((s|z|plate)render|lfxprep|chopit|convert|split|sceneprep|jspatrick)" cue3-search-history))
-
 
 ;; Commands for working with MEL files
 (defun grep-for-procs()
@@ -20,8 +16,19 @@
   "Maya version used")
 
 (defvar current-show
-  "kil"
+  "lon"
   "The show Im working on")
+
+  ;;-------------CUE3 mode!
+(require 'cue3)
+(setq cue3-search-history 
+      (cons 
+       (concat 
+        current-show 
+        "-.*((s|z|plate)render|lfxprep|chopit|convert|split|sceneprep|jspatrick)") 
+       cue3-search-history)
+)
+
 
 (defun get-maya-version(&optional show)
   "Return the maya version string for show"
