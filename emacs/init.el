@@ -145,8 +145,19 @@
 ;;--------------------EPC--------------------
 (require 'epc)
 
+;;--------------------C++--------------------
+(setq-default c-basic-offset 4 c-default-style "linux")
+(setq-default tab-width 4 indent-tabs-mode t)
+(setq-default c-default-style)
+
+(require 'auto-complete-clang)
+(defun my-ac-cc-mode-setup ()
+  (setq ac-sources (append '(ac-source-clang) ac-sources)))
+(add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
+
 
 ;;--------------------PYTHON--------------------
+(require 'python)
 (autoload 'jedi:setup "jedi" nil t)
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
@@ -157,8 +168,14 @@
                                         (list maya-python-interpreter 
                                               (expand-file-name "elpa/jedi-20130714.1415/jediepcserver.py"))
                                         )
+								;; (setq jedi:server-command
+                                ;;         (list "python" 
+                                ;;               (expand-file-name "~/.emacs.d/elpa/jedi-20130714.1415/jediepcserver.py"))
+                                ;;         )
                                 )
                               ))
+;;django mode
+(require 'python-django)
 
 
 ;;flymake error checking
@@ -337,6 +354,7 @@
 (global-set-key (kbd "M-r") 'replace-regexp)
 (global-set-key (kbd "C-x M-r") 'search-forward-regexp)
 (global-set-key (kbd "M-B") 'rename-buffer)
+(global-set-key (kbd "C-x j") 'python-django-open-project)
 
 ;--------------------SITE SPECIFIC--------------------
 ;; load imageworks stuff if at imageworks

@@ -16,7 +16,6 @@ alias rdiff="svn diff --diff-cmd meld -r "
 alias rmSvnDirs="find . -type d -iname '.svn' | xargs -0 rm -rf"
 alias md="svn diff --diff-cmd meld -r"
 alias fnd="find -L $PWD -type d -name '.*' -prune -o -name"
-
-
-
-
+alias qm="qmake -spec macx-g++"
+alias bp_server="/Users/john/Sites/bachelor_pickem/manage.py runserver"
+alias djenv="source /Users/john/Sites/djenv/bin/activate"
