@@ -4,6 +4,7 @@
 (add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
+(load "my_tools")
 ;;--------------------global settings--------------------
 ;; Am i at work?  some things will need to be configured differently if so
 (defvar am-i-at-work 
@@ -157,27 +158,42 @@
 
 
 ;;--------------------PYTHON--------------------
+
 (require 'python)
-(autoload 'jedi:setup "jedi" nil t)
+;(autoload 'jedi:setup "jedi" nil t)
+(add-hook 'python-mode-hook 'jedi:setup)
+
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
+
+
+
+
 (add-hook 'python-mode-hook (lambda () 
                               (jedi:setup)
                               (if am-i-at-work
                                   (setq jedi:server-command
                                         (list maya-python-interpreter 
                                               (expand-file-name "elpa/jedi-20130714.1415/jediepcserver.py"))
-                                        )
+										)
 								;; (setq jedi:server-command
                                 ;;         (list "python" 
                                 ;;               (expand-file-name "~/.emacs.d/elpa/jedi-20130714.1415/jediepcserver.py"))
                                 ;;         )
-                                )
-                              ))
-;;django mode
-(require 'python-django)
+								)
+                              )
+)
 
 
+ 
+(defun python-mode-additional-keys ()
+    "Key bindings to add to `python-mode'."
+    (define-key python-mode-map (kbd "C-c c") 'python-compile)
+    (define-key python-mode-map (kbd "C-c t") 'python-pytest)
+    )
+
+
+(add-hook 'python-mode-hook 'python-mode-additional-keys)
 ;;flymake error checking
 (when (load "flymake" t)
   (defun flymake-pylint-init ()
@@ -220,6 +236,11 @@
 (global-auto-complete-mode t)
 
 
+;--------------------C++--------------------
+(defun my-c++-mode-hook ()
+  (setq c-basic-offset 4)
+  (c-set-offset 'substatement-open 0))
+(add-hook 'c++-mode-hook 'my-c++-mode-hook)
 
 ;--------------------Other--------------------
 ;yaml mode
@@ -243,24 +264,11 @@
               auto-mode-alist))
 
 
-    
-(defun jp-todo ()
- "Open my todo list"
- (interactive)
- (find-file "/net/homedirs/jspatrick/todo.org")
- (outline-mode))
-
 (defun jp-notes ()
  "Open my todo list"
  (interactive)
  (find-file "/net/homedirs/jspatrick/notes.org")
  (outline-mode))
-
-(defun jp-new-frame()
- "Create new frame"
- (interactive)
- (make-frame-command)
- (load-file "~/.emacs.d/init.el"))
 
 (defun jp-insert-setAttr ()
  "insert setattr command"
@@ -338,7 +346,6 @@
 ;--------------------KEY BINDINGS--------------------
 (ffap-bindings)
 (global-set-key (kbd "C-c f") 'ffap-other-window)
-(global-set-key (kbd "M-a") 'jp-insert-setAttr)
 (global-set-key (kbd "C-<tab>") 'ac-start)
 
 (global-set-key (kbd "C-c 3") 'comment-region)
@@ -360,7 +367,7 @@
 ;; load imageworks stuff if at imageworks
 (if am-i-at-work
     (load "imageworks"))
-(load "my_tools")
+
 ; run in server mode, so new requests can use 'emacsclient' to visit files in current session
 ;;(server-start)
 

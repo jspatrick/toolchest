@@ -4,7 +4,7 @@
 
 ;; Author: Takafumi Arakaki <aka.tkf at gmail.com>
 ;; Package-Requires: ((epc "0.1.0") (auto-complete "1.4"))
-;; Version: 0.1.3alpha2
+;; Version: 0.1.2
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -40,7 +40,7 @@
   :group 'completion
   :prefix "jedi:")
 
-(defconst jedi:version "0.1.3alpha2")
+(defconst jedi:version "0.1.2")
 
 (defvar jedi:source-dir (if load-file-name
                             (file-name-directory load-file-name)
@@ -226,13 +226,8 @@ This can be set to `jedi:create-flat-imenu-index'.
 Default is `jedi:create-nested-imenu-index'."
   :group 'jedi)
 
-(make-obsolete-variable 'jedi:setup-keys nil "0.1.3")
 (defcustom jedi:setup-keys nil
   "Setup recommended keybinds.
-
-.. warning:: Use of this value is obsolete now.  As of 0.1.3,
-   jedi.el has default keybinds, which are different than these. See also
-   `jedi-mode'.
 
 .. admonition:: Default keybinds
 
@@ -302,14 +297,6 @@ avoid collision by something like this::
   "Keybind for command `jedi:goto-definition-pop-marker'."
   :group 'jedi)
 
-(defcustom jedi:use-shortcuts nil
-  "If non-`nil', enable the following shortcuts:
-
-| ``M-.``  `jedi:goto-definition'
-| ``M-,``  `jedi:goto-definition-pop-marker'
-"
-  :group 'jedi)
-
 (defcustom jedi:import-python-el-settings t
   "Automatically import setting from python.el variables."
   :group 'jedi)
@@ -344,9 +331,6 @@ toolitp when inside of function call.
   :keymap jedi-mode-map
   :group 'jedi
   (let ((map jedi-mode-map))
-    (when jedi:use-shortcuts
-      (define-key map (kbd "M-.") 'jedi:goto-definition)
-      (define-key map (kbd "M-,") 'jedi:goto-definition-pop-marker))
     (if jedi:complete-on-dot
         (define-key map "." 'jedi:dot-complete)
       (define-key map "." nil)))
@@ -362,21 +346,6 @@ toolitp when inside of function call.
     (remove-hook 'after-change-functions 'jedi:after-change-handler t)
     (remove-hook 'kill-buffer-hook 'jedi:server-pool--gc-when-idle t)
     (jedi:server-pool--gc-when-idle)))
-
-;; Define keybinds.
-;; See: https://github.com/tkf/emacs-jedi/issues/47
-(let ((map jedi-mode-map))
-  (define-key map (kbd "<C-tab>") 'jedi:complete)
-  (define-key map (kbd "C-c ?") 'jedi:show-doc)
-  (define-key map (kbd "C-c .") 'jedi:goto-definition)
-  (define-key map (kbd "C-c ,") 'jedi:goto-definition-pop-marker)
-  (let ((command (cond
-                  ((featurep 'helm) 'helm-jedi-related-names)
-                  ((featurep 'anything) 'anything-jedi-related-names)
-                  ((locate-library "helm") 'helm-jedi-related-names)
-                  ((locate-library "anything") 'anything-jedi-related-names))))
-    (when command
-      (define-key map (kbd "C-c /") command))))
 
 (when jedi:setup-keys
   (let ((map jedi-mode-map))
@@ -601,20 +570,9 @@ See: https://github.com/tkf/emacs-jedi/issues/54"
 
 ;;;###autoload
 (defun jedi:ac-setup ()
-  "Add Jedi AC sources to `ac-sources'.
-
-If auto-completion is all you need, you can call this function instead
-of `jedi:setup', like this::
-
-   (add-hook 'python-mode-hook 'jedi:ac-setup)
-
-Note that this function calls `auto-complete-mode' if it is not
-already enabled, for people who don't call `global-auto-complete-mode'
-in their Emacs configuration."
+  "Add Jedi AC sources to `ac-sources'."
   (interactive)
-  (add-to-list 'ac-sources 'ac-source-jedi-direct)
-  (unless auto-complete-mode
-    (auto-complete-mode)))
+  (add-to-list 'ac-sources 'ac-source-jedi-direct))
 
 
 ;;; Call signature (get_in_function_call)
@@ -986,9 +944,7 @@ See also `jedi:imenu-create-index-function'."
   "Request version of Python modules and return a deferred object."
   (epc:call-deferred (jedi:get-epc) 'get_jedi_version nil))
 
-(defun jedi:show-version-info ()
-  "Show version info of Python modules used by the server.
-Paste the result of this function in bug report."
+(defun jedi:show-jedi-version ()
   (interactive)
   (deferred:nextc (jedi:get-jedi-version-request)
     (lambda (reply)
@@ -996,12 +952,8 @@ Paste the result of this function in bug report."
         (with-current-buffer standard-output
           (emacs-lisp-mode)
           (erase-buffer)
-          (pp `(:emacs-version ,emacs-version :jedi-version ,jedi:version))
           (pp reply)
           (display-buffer standard-output))))))
-
-(define-obsolete-function-alias
-  'jedi:show-jedi-version 'jedi:show-version-info "0.1.3")
 
 (defun jedi:print-jedi-version ()
   (pp (epc:sync (jedi:get-epc) (jedi:get-jedi-version-request))))
@@ -1056,29 +1008,6 @@ what jedi can do."
 
 ;;; Debugging
 
-(defun jedi:pop-to-epc-buffer ()
-  "Open the buffer associated with EPC server process.
-Use this command to see the output (e.g., traceback) of the server process."
-  (interactive)
-  (pop-to-buffer (process-buffer (epc:manager-server-process jedi:epc))))
-
-(defun jedi:toggle-log-traceback ()
-  "Toggle on/off traceback logging for EPC server for the current buffer.
-When there is an error during traceback logging is enabled, traceback
-is printed in the EPC buffer.  You can use `jedi:pop-to-epc-buffer' to
-open that buffer.
-
-You can also pass ``--log-traceback`` option to jediepcserver.py
-to start server with traceback logging turned on.  This is useful when
-there is a problem in communication (thus this command does not work).
-You can use `jedi:start-dedicated-server' to restart EPC server for the
-current buffer with specific arguments."
-  (interactive)
-  (deferred:$
-    (epc:call-deferred (jedi:get-epc) 'toggle_log_traceback nil)
-    (deferred:nextc it
-      (lambda (flag)
-        (message "Traceback logging is %s" (if flag "enabled" "disabled"))))))
 
 (defvar jedi:server-command--backup nil)
 (defvar jedi:server-args--backup nil)
