@@ -2,6 +2,7 @@
 
 ; add ~/.emacs.d directory to load-path
 (add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d/pony-mode/src")
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
 (load "my_tools")
@@ -11,21 +12,6 @@
   (eq system-type 'gnu/linux)
   "am I at work?")
 
-(defvar maya-python-interpreter 
-  (expand-file-name "~/virtual_mayapy/bin/python")
-  "The python interpreter to use when using flymake, jedi, etc on 
-   a maya file")
-
-(defvar standard-python-interpreter
-  (expand-file-name "~/virtual_mayapy/bin/python")
-  "The python interpreter to use when using flymake, jedi, etc on 
-   a standard file")
-
-(defvar maya-pylint-cmd
-  (concat (file-name-directory maya-python-interpreter)
-          "epylint")
-  "The pylint binary to use"
-)
 
 ;;Marmalade package mgr
 (require 'package)
@@ -148,19 +134,36 @@
 
 
 ;;--------------------PYTHON--------------------
+(defvar maya-python-interpreter 
+  (expand-file-name "~/virtual_mayapy/bin/python")
+  "The python interpreter to use when using flymake, jedi, etc on 
+   a maya file")
+
+(defvar standard-python-interpreter
+  (expand-file-name "~/virtual_mayapy/bin/python")
+  "The python interpreter to use when using flymake, jedi, etc on 
+   a standard file")
+
+
+(defvar maya-pylint-cmd
+  (concat (file-name-directory maya-python-interpreter)
+          "epylint")
+  "The pylint binary to use"
+)
+
+;(require 'python-django) doesn't work for shit
+(require 'pony-mode)
+
 ;(autoload 'jedi:setup "jedi" nil t)
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
 
-
-
-
 (add-hook 'python-mode-hook (lambda () 
                               (jedi:setup)
                               (if am-i-at-work
                                   (setq jedi:server-command
-                                    (list "/net/homedirs/jspatrick/virtual_mayapy_bin/python" jedi:server-script)
+                                    (list maya-python-interpreter jedi:server-script)
                                     )
                                 )
                               )
@@ -187,6 +190,11 @@
 
        (add-to-list 'flymake-allowed-file-name-masks
                 '("\\.py\\'" flymake-pylint-init)))
+
+
+(setq python-indent-offset 4)
+;; don't try to guess.  It should always be 4
+(setq python-indent-guess-indent-offset nil)
 
 ;; To avoid having to mouse hover for the error message, these functions make flymake error messages
 ;; appear in the minibuffer
@@ -340,6 +348,8 @@
 (global-set-key (kbd "M-r") 'replace-regexp)
 (global-set-key (kbd "C-x M-r") 'search-forward-regexp)
 (global-set-key (kbd "M-B") 'rename-buffer)
+
+(global-set-key (kbd "C-c C-p") 'python-shell-switch-to-shell)
 
 ;--------------------SITE SPECIFIC--------------------
 ;; load imageworks stuff if at imageworks

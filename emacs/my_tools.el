@@ -31,6 +31,16 @@
 
 
 
+(defun python-compile-dev-mode ()
+  "Set dev mode"
+  (interactive "")
+  (setenv "PYTHONPATH" (concat "/shots/spi/home/dev/jspatrick/python/common:"
+           (getenv "PYTHONPATH")
+           ))
+)
+
+
+
 (defvar python-test-cmd "pytest"
  "Command to use for python unit testing"
   )

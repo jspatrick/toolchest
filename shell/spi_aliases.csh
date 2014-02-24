@@ -32,3 +32,5 @@ alias spJ "source $HOME/spi_jump.csh;"
 alias vcci_force "/shots/spi/home/bin/common/vcci"
 alias vcci "/shots/cl2/home/bin/common/vcci_shy"
 alias vpy "$HOME/virtual_mayapy/bin/python"
+
+alias djenv "source $HOME/toolchest/shell/virtual_envs/djenv.csh"

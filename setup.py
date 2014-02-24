@@ -26,8 +26,11 @@ def thisDir():
         
     return cwd
 
-    
+
 toolchest_dir = thisDir()
+
+def getShell():
+    return os.environ.get('SHELL', 'bash').split('/')[-1]
 
 symlinks = {os.path.join(toolchest_dir, 'emacs'): '~/.emacs.d',
             os.path.join(toolchest_dir, 'shell', 'aliases.csh'): '~/.aliases',
