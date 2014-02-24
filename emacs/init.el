@@ -11,21 +11,6 @@
   (eq system-type 'gnu/linux)
   "am I at work?")
 
-(defvar maya-python-interpreter 
-  (expand-file-name "~/virtual_mayapy/bin/python")
-  "The python interpreter to use when using flymake, jedi, etc on 
-   a maya file")
-
-(defvar standard-python-interpreter
-  (expand-file-name "~/virtual_mayapy/bin/python")
-  "The python interpreter to use when using flymake, jedi, etc on 
-   a standard file")
-
-(defvar maya-pylint-cmd
-  (concat (file-name-directory maya-python-interpreter)
-          "epylint")
-  "The pylint binary to use"
-)
 
 ;;Marmalade package mgr
 (require 'package)
@@ -159,30 +144,27 @@
 
 ;;--------------------PYTHON--------------------
 
-(require 'python)
-;(autoload 'jedi:setup "jedi" nil t)
+;;(require 'python)
+(setq emacs_py_virtualenv (expand-file-name "~/toolchest/emacspy"))
+(setq emacs_py_interp (expand-file-name "~/toolchest/emacspy/bin/python"))
+(setq python-shell-virtualenv-path emacs_py_virtualenv)
+
+(autoload 'jedi:setup "jedi" nil t)
 (add-hook 'python-mode-hook 'jedi:setup)
 
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
 
 
-
-
 (add-hook 'python-mode-hook (lambda () 
                               (jedi:setup)
-                              (if am-i-at-work
-                                  (setq jedi:server-command
-                                        (list maya-python-interpreter 
-                                              (expand-file-name "elpa/jedi-20130714.1415/jediepcserver.py"))
-										)
-								;; (setq jedi:server-command
-                                ;;         (list "python" 
-                                ;;               (expand-file-name "~/.emacs.d/elpa/jedi-20130714.1415/jediepcserver.py"))
-                                ;;         )
-								)
-                              )
-)
+							  (setq jedi:server-command
+									(list emacs_py_interp 
+										  jedi:server-script)
+									)
+							  )
+		  )
+
 
 
  
@@ -203,7 +185,7 @@
                          temp-file
                          (file-name-directory buffer-file-name))))
        
-           (list maya-pylint-cmd
+           (list (concat emacs_py_virtualenv "/bin/epylint")
                  (list local-file))))
 
        (add-to-list 'flymake-allowed-file-name-masks

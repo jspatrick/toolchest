@@ -1,2 +1,6 @@
 emacs_virtualenv
 emacs/elpa/jedi*/env/
+emacspy/**
+llvm/**
+llvm_src/**
+
