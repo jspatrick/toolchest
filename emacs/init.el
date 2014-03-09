@@ -141,7 +141,13 @@
   (setq ac-sources (append '(ac-source-clang) ac-sources)))
 (add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
 
-
+;;--------------------HTML/DJANGO--------------------
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+(setq web-mode-engines-alist
+      '(("django"    . "\\.html\\'"))
+)
 ;;--------------------PYTHON--------------------
 
 ;;(require 'python)
@@ -206,6 +212,8 @@
 
 (add-hook 'post-command-hook 'show-fly-err-at-point)
 
+;; django
+(require 'python-django)
 
 ;--------------------AUTO COMPLETE--------------------
 (require 'auto-complete-config)
