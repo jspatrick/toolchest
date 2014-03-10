@@ -142,7 +142,13 @@
   (setq ac-sources (append '(ac-source-clang) ac-sources)))
 (add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
 
-
+;;--------------------HTML/DJANGO--------------------
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+(setq web-mode-engines-alist
+      '(("django"    . "\\.html\\'"))
+)
 ;;--------------------PYTHON--------------------
 (require 'pony-mode)
 (setq emacs_py_virtualenv (expand-file-name "~/toolchest/emacspy"))
@@ -208,6 +214,8 @@
 
 (add-hook 'post-command-hook 'show-fly-err-at-point)
 
+;; django
+(require 'python-django)
 
 ;--------------------AUTO COMPLETE--------------------
 (require 'auto-complete-config)
@@ -363,6 +371,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values (quote ((python-shell-interpreter-args . "/Users/john/Sites/reality-pickem/manage.py shell") (python-shell-interpreter . "python"))))
  '(send-mail-function (quote smtpmail-send-it))
  '(smtpmail-smtp-server "localhost")
  '(smtpmail-smtp-service 25))
