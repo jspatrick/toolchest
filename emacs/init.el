@@ -132,48 +132,45 @@
 ;;--------------------EPC--------------------
 (require 'epc)
 
+;;--------------------C++--------------------
+(setq-default c-basic-offset 4 c-default-style "linux")
+(setq-default tab-width 4 indent-tabs-mode t)
+(setq-default c-default-style)
+
+(require 'auto-complete-clang)
+(defun my-ac-cc-mode-setup ()
+  (setq ac-sources (append '(ac-source-clang) ac-sources)))
+(add-hook 'c-mode-common-hook 'my-ac-cc-mode-setup)
+
 
 ;;--------------------PYTHON--------------------
-(defvar maya-python-interpreter 
-  (expand-file-name "~/virtual_mayapy/bin/python")
-  "The python interpreter to use when using flymake, jedi, etc on 
-   a maya file")
-
-(defvar standard-python-interpreter
-  (expand-file-name "~/virtual_mayapy/bin/python")
-  "The python interpreter to use when using flymake, jedi, etc on 
-   a standard file")
-
-
-(defvar maya-pylint-cmd
-  (concat (file-name-directory maya-python-interpreter)
-          "epylint")
-  "The pylint binary to use"
-)
-
-;(require 'python-django) doesn't work for shit
 (require 'pony-mode)
+(setq emacs_py_virtualenv (expand-file-name "~/toolchest/emacspy"))
+(setq emacs_py_interp (expand-file-name "~/toolchest/emacspy/bin/python"))
+(setq python-shell-virtualenv-path emacs_py_virtualenv)
 
-;(autoload 'jedi:setup "jedi" nil t)
-(add-hook 'python-mode-hook 'jedi:setup)
+;setup jedi
+(autoload 'jedi:setup "jedi" nil t)
 (setq jedi:setup-keys t)
 (setq jedi:complete-on-dot t)
 
+(add-hook 'python-mode-hook 'jedi:setup)
 (add-hook 'python-mode-hook (lambda () 
                               (jedi:setup)
-                              (if am-i-at-work
-                                  (setq jedi:server-command
-                                    (list maya-python-interpreter jedi:server-script)
-                                    )
-                                )
-                              )
-          )
+			      (setq jedi:server-command
+				    (list emacs_py_interp 
+					  jedi:server-script)
+				    )
+			      )
+		  )
+
  
 (defun python-mode-additional-keys ()
     "Key bindings to add to `python-mode'."
     (define-key python-mode-map (kbd "C-c c") 'python-compile)
     (define-key python-mode-map (kbd "C-c t") 'python-pytest)
     )
+
 
 (add-hook 'python-mode-hook 'python-mode-additional-keys)
 ;;flymake error checking
@@ -185,7 +182,7 @@
                          temp-file
                          (file-name-directory buffer-file-name))))
        
-           (list maya-pylint-cmd
+           (list (concat emacs_py_virtualenv "/bin/epylint")
                  (list local-file))))
 
        (add-to-list 'flymake-allowed-file-name-masks
@@ -348,6 +345,7 @@
 (global-set-key (kbd "M-r") 'replace-regexp)
 (global-set-key (kbd "C-x M-r") 'search-forward-regexp)
 (global-set-key (kbd "M-B") 'rename-buffer)
+(global-set-key (kbd "C-x j") 'python-django-open-project)
 
 (global-set-key (kbd "C-c C-p") 'python-shell-switch-to-shell)
 
@@ -374,3 +372,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'erase-buffer 'disabled nil)

@@ -1,5 +1,9 @@
-(defvar python-bin "python"
-"the python command to run when compiling")
+(defun get-python-bin ()
+"Get the current python binary to use, based on the current virtualenv"
+(interactive "")
+(concat python-shell-exec-path python-shell-interpreter)
+)
+
 
 (defun ask-to-save-buffer ()
   "Ask to save this buffer"
@@ -17,7 +21,7 @@
         (compilation-ask-about-save nil)
         (compilation-save-buffers-predicate '(lambda () nil))
         (cmd nil))
-    (setq cmd (concat python-bin " " (buffer-file-name)))
+    (setq cmd (concat (get-python-bin) " " (buffer-file-name)))
     (if args
         (setq cmd (concat cmd " " args))
       )
@@ -44,6 +48,7 @@
 (defvar python-test-cmd "pytest"
  "Command to use for python unit testing"
   )
+
 (defun python-pytest (&optional args)
   (interactive "s unittest args: ")
   (let ((this-buffer-file (buffer-file-name))
@@ -74,3 +79,7 @@
 
 (global-set-key (kbd "C-c C-c") 'python-compile)
 (global-set-key (kbd "C-c t") 'python-pytest)
+(global-set-key (kbd "C-c t") 'python-pytest)
+(global-set-key (kbd "C-c o") (lambda () "" (interactive "") (occur "^def\\|^class")))
+(global-set-key (kbd "C-c C-o") (lambda () "" (interactive "") (kill-buffer "*Occur*")))
+
