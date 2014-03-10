@@ -1,0 +1,23 @@
+{
+    "commands": {
+        "lf": "find $cwd/ -maxdepth 1", 
+        "md": "svn diff --diff-cmd meld -r", 
+        "c": "clear", 
+        "rmSvnDirs": "find . -type d -iname \".svn\" | xargs -0 rm -rf", 
+        "lsc": "ls --color=auto", 
+        "la": "ls -lha", 
+        "diffPrev": "svn diff --diff-cmd meld -r PREV:HEAD", 
+        "l": "ls -lrt --color=auto", 
+        "ec": "emacsclient", 
+        "egi": "egrep -i", 
+        "fnd": "find -L $PWD \\( ! -type d -name \".*\" -prune \\) -o -iname", 
+        "u": "cd ../", 
+        "lrt": "ls -lrt", 
+        "rdiff": "svn diff --diff-cmd meld -r ", 
+        "gi": "grep -i", 
+        "lrtc": "ls --color=auto -lrt"
+    }, 
+    "quotetype": {
+        "default": "'"
+    }
+}

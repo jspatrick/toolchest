@@ -2,7 +2,6 @@
 
 ; add ~/.emacs.d directory to load-path
 (add-to-list 'load-path "~/.emacs.d")
-(add-to-list 'load-path "~/.emacs.d/pony-mode/src")
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 
 (load "my_tools")
@@ -150,7 +149,7 @@
       '(("django"    . "\\.html\\'"))
 )
 ;;--------------------PYTHON--------------------
-(require 'pony-mode)
+
 (setq emacs_py_virtualenv (expand-file-name "~/toolchest/emacspy"))
 (setq emacs_py_interp (expand-file-name "~/toolchest/emacspy/bin/python"))
 (setq python-shell-virtualenv-path emacs_py_virtualenv)
