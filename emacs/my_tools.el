@@ -43,6 +43,12 @@
            ))
 )
 
+(defun python-compile-edu ()
+  "Set dev mode"
+  (interactive "")
+  (setenv "SHOW" "edu")
+  (setenv "SHOW" "dev.home")
+)
 
 
 (defvar python-test-cmd "pytest"

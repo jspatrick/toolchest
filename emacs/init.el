@@ -88,6 +88,11 @@
 (global-linum-mode 1)
 
 
+;;--------------------MARKDOWN--------------------
+(autoload 'markdown-mode "markdown-mode"
+   "Major mode for editing Markdown files" t)
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
 ;;--------------------XML--------------------
 (defun nxml-mode-additional-keys ()
@@ -153,6 +158,7 @@
 (setq emacs_py_virtualenv (expand-file-name "~/toolchest/emacspy"))
 (setq emacs_py_interp (expand-file-name "~/toolchest/emacspy/bin/python"))
 (setq python-shell-virtualenv-path emacs_py_virtualenv)
+(setq toolchest-root (expand-file-name "~/toolchest"))
 
 ;setup jedi
 (autoload 'jedi:setup "jedi" nil t)
@@ -187,7 +193,7 @@
                          temp-file
                          (file-name-directory buffer-file-name))))
        
-           (list (concat emacs_py_virtualenv "/bin/epylint")
+           (list (concat toolchest-root "/bin/emacs_pylint")
                  (list local-file))))
 
        (add-to-list 'flymake-allowed-file-name-masks

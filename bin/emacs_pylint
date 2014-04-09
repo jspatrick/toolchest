@@ -1,0 +1,8 @@
+#!/net/homedirs/jspatrick/toolchest/emacspy/bin/python2.6
+import sys
+import pylint.epylint
+
+if __name__ == '__main__':
+    fpath = sys.argv[1]
+    opts = ['-E']
+    pylint.epylint.lint(fpath, opts)
