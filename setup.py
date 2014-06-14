@@ -122,22 +122,11 @@ def makeLinks():
             
         os.symlink(target, link)
 
-def setupJedi():    
-    path = os.environ.get('PATH', '').split(':')
-    if toolchest_dir not in path:
-        path.insert(0, toolchest_dir)
-        os.environ['PATH'] = ':'.join(path)
- 
-    jedi_path = os.path.join(toolchest_dir, 'emacs/elpa/jedi-20130714.1415/')
-    os.chdir(jedi_path)
-    p = subprocess.Popen('make requirements', stdout=subprocess.PIPE, shell=True)
-    print "seting up jedi - this requires an internet connection..."
-    print p.communicate()
 
 
 def main():
     makeLinks()
-    setupJedi()
+
 
 main()
     

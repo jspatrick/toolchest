@@ -23,10 +23,15 @@
 (load-theme 'monokai t)
 
 ;OSX key mods
-(setq mac-option-key-is-meta nil)
-(setq mac-command-key-is-meta t)
-(setq mac-command-modifier 'meta)
-(setq mac-option-modifier nil)
+(when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)
+	(setq mac-option-key-is-meta nil)
+	(setq mac-command-key-is-meta t)
+	(setq mac-command-modifier 'meta)
+	(setq mac-option-modifier nil))
+
+
+
 
 ;;turn off the alarm bell
 (setq visible-bell 1)
@@ -94,6 +99,9 @@
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
+;;--------------------CSS--------------------
+(require 'less-css-mode)
+(add-to-list 'auto-mode-alist '("\\.less$" . less-css-mode))
 ;;--------------------XML--------------------
 (defun nxml-mode-additional-keys ()
     "Key bindings to add to `nxml-mode'."
@@ -365,7 +373,9 @@
 ;--------------------SITE SPECIFIC--------------------
 ;; load imageworks stuff if at imageworks
 (if am-i-at-work
-    (load "imageworks"))
+    (load "imageworks")
+  (load "jp_home")
+)
 
 ; run in server mode, so new requests can use 'emacsclient' to visit files in current session
 ;;(server-start)
