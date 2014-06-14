@@ -1,4 +1,15 @@
-(message "loading jp's home setup")
+(message "loading home setup")
+
+;OSX specific mods.  Put in an 'if' in case we change home systems
+(when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)
+	(setq mac-option-key-is-meta nil)
+	(setq mac-command-key-is-meta t)
+	(setq mac-command-modifier 'meta)
+	(setq mac-option-modifier nil))
+
+
+(setq user-mail-address "jspatrick@gmail.com")
 
 (add-to-list 'load-path "~/lintnode")
 (require 'flymake-jslint)

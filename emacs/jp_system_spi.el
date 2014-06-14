@@ -1,6 +1,7 @@
 ;;----------SPI STUFF-------------------
+(message "loading spi setup")
 
-
+(setq user-mail-address "jspatrick@imageworks.com")
 ;; Commands for working with MEL files
 (defun grep-for-procs()
  "Grep through directory for mel procedure commands"
