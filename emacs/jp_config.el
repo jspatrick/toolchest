@@ -1,4 +1,3 @@
-
 ;;Marmalade package mgr
 (require 'package)
 (add-to-list 'package-archives
@@ -115,6 +114,10 @@
 (setq web-mode-engines-alist
       '(("django"    . "\\.html\\'"))
 )
+
+;;--------------------JAVASCRIPT----------------
+(require 'js2-mode)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;;--------------------PYTHON--------------------
 
 (setq python-indent-offset 4)
@@ -122,10 +125,10 @@
 (setq python-indent-guess-indent-offset nil)
 ;; use the virtual python installed in our toolcheset.  Lets us install additional packages like Jedi w/o root access
 ;; 
-(setq emacs_py_virtualenv (expand-file-name "~/toolchest/emacspy"))
-(setq emacs_py_interp (expand-file-name "~/toolchest/emacspy/bin/python"))
+
+(setq emacs_py_virtualenv (expand-file-name (concat toolchest-directory "/emacspy")))
+(setq emacs_py_interp (expand-file-name (concat toolchest-directory "/emacspy/bin/python")))
 (setq python-shell-virtualenv-path emacs_py_virtualenv)
-(setq toolchest-root (expand-file-name "~/toolchest"))
 
 ;setup jedi for autocompletion
 (autoload 'jedi:setup "jedi" nil t)
@@ -159,7 +162,7 @@
                          temp-file
                          (file-name-directory buffer-file-name))))
        
-           (list (concat toolchest-root "/bin/emacs_pylint")
+           (list (concat toolchest-directory "/bin/emacs_pylint")
                  (list local-file))))
 
        (add-to-list 'flymake-allowed-file-name-masks
@@ -226,3 +229,4 @@
 (global-set-key (kbd "<f8>") 'copy-buffer-file-name-as-kill)
 
 (require 'misc)
+

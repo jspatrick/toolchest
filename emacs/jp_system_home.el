@@ -11,10 +11,9 @@
 
 (setq user-mail-address "jspatrick@gmail.com")
 
-(add-to-list 'load-path "~/lintnode")
 (require 'flymake-jslint)
 ;; Make sure we can find the lintnode executable
-(setq lintnode-location "~/lintnode")
+(setq lintnode-location (concat toolchest-directory "/lintnode"))
 ;; JSLint can be... opinionated
 (setq lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))
 ;; Start the server when we first open a js file and start checking

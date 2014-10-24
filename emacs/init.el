@@ -11,6 +11,9 @@
 ; add ~/.emacs.d directory to load-path
 (add-to-list 'load-path "~/.emacs.d")
 
+;; The root toolchest directory
+(defvar toolchest-directory "~/toolchest")
+
 
 (load "jp_config")
 (load "jp_tools")
@@ -29,6 +32,7 @@
 	(throw "no system" "Cannot identify the current system")
 )
 
+  
 ;; Find the load file and load it
 (let ((system-load-file (concat "jp_system_" my-system-name )))
   (if (locate-file system-load-file load-path load-suffixes)	  
@@ -41,3 +45,15 @@
 )
 
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values (quote ((python-shell-interpreter-args . "/Users/john/Sites/reality-pickem/manage.py shell") (python-shell-interpreter . "python")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
