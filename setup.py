@@ -35,9 +35,6 @@ def getShell():
 symlinks = {os.path.join(toolchest_dir, 'emacs'): '~/.emacs.d',
             os.path.join(toolchest_dir, 'shell', 'aliases.csh'): '~/.aliases',
             os.path.join(toolchest_dir, 'shell', 'aliases.bash'): '~/.aliases',
-            os.path.join(toolchest_dir, 'shell', 'spi_aliases.csh'): '~/.spi_aliases',
-            os.path.join(toolchest_dir, 'shell', 'spi_jump.csh'): '~/spi_jump.csh',
-            os.path.join(toolchest_dir, 'shell', 'set_python_path.csh'): '~/set_python_path.csh'
             }
 
 

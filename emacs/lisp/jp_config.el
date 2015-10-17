@@ -5,10 +5,8 @@
 (package-initialize)
 
 ;;colors
-;(load-theme 'solarized-dark t)
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'monokai t)
-
+(add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/themes/")
+(load-theme 'monokai)
 ;;only cycle through buffers with files
 (setq bs-cycle-configuration-name "files")
 
@@ -229,4 +227,3 @@
 (global-set-key (kbd "<f8>") 'copy-buffer-file-name-as-kill)
 
 (require 'misc)
-

@@ -9,7 +9,7 @@
 ;; I use jp_system_SYSTEMNAME.el files for system-specific/site-specifc setup.
 
 ; add ~/.emacs.d directory to load-path
-(add-to-list 'load-path "~/.emacs.d")
+(add-to-list 'load-path "~/.emacs.d/lisp/") ;;should be automatic
 
 ;; The root toolchest directory
 (defvar toolchest-directory "~/toolchest")
@@ -23,10 +23,9 @@
 
 ;; Get the name of our current system.
 (defvar my-system-name 
-  (cond ((memq system-type '(gnu/linux)) "spi")
-		;;Are we in OSSX
-		((memq system-type '(darwin)) "home")
-		))
+  (cond (	 
+	 ((memq system-type '(darwin)) "home") ;;Are we in OSX?
+	 ))
 ;; Throw an error if we can't ID the current system
 (if (eq my-system-name nil)
 	(throw "no system" "Cannot identify the current system")
@@ -44,16 +43,4 @@
 	)
 )
 
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(safe-local-variable-values (quote ((python-shell-interpreter-args . "/Users/john/Sites/reality-pickem/manage.py shell") (python-shell-interpreter . "python")))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(put 'dired-find-alternate-file 'disabled nil)
