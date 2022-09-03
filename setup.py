@@ -87,7 +87,7 @@ def moveToBackup(filepath, backupToken = 'bak'):
     
 def makeLinks():    
 
-    for target, link in symlinks.iteritems():
+    for target, link in symlinks.items():
 
         target = full_path(target)
         link = full_path(link)
@@ -103,7 +103,7 @@ def makeLinks():
                 _logger.info("Skipping %s" % target)
                 continue
         else:
-            print "No predicate for %s" % link
+            _logger.info("No predicate for %s" % link)
 
         #if the link exists but is not pointing to target...        
         #os.path.exists is false for bad simlinks, so also check if it's a link
