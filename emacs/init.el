@@ -18,29 +18,19 @@
 (load "jp_config")
 (load "jp_tools")
 (load "jp_keybindings")
+(load "jp_system_home")
 
-;--------------------LOAD SYSYTEM-SPECIFIC CONFIG--------------------
 
-;; Get the name of our current system.
-(defvar my-system-name 
-  (cond (	 
-	 ((memq system-type '(darwin)) "home") ;;Are we in OSX?
-	 ))
-;; Throw an error if we can't ID the current system
-(if (eq my-system-name nil)
-	(throw "no system" "Cannot identify the current system")
-)
-
-  
-;; Find the load file and load it
-(let ((system-load-file (concat "jp_system_" my-system-name )))
-  (if (locate-file system-load-file load-path load-suffixes)	  
-	  (progn
-		(message (concat "loading: " system-load-file))
-		(load system-load-file)
-		)
-
-	)
-)
-
-(put 'dired-find-alternate-file 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("0d3fb10835e185b4b350b1bd902ca452e795b9e9fc7f6e8a5eebb9d146f9beff" default)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
