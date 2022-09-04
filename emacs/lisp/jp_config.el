@@ -101,9 +101,6 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 (setq org-agenda-files (list "~/todo.org"))
 
-;;--------------------EPC--------------------
-;;An asynchronous client/server used by Jedi
-(require 'epc)
 
 ;;--------------------HTML/DJANGO--------------------
 (require 'web-mode)
@@ -127,22 +124,6 @@
 (setq emacs_py_virtualenv (expand-file-name (concat toolchest-directory "/emacspy")))
 (setq emacs_py_interp (expand-file-name (concat toolchest-directory "/emacspy/bin/python")))
 (setq python-shell-virtualenv-path emacs_py_virtualenv)
-
-;setup jedi for autocompletion
-(autoload 'jedi:setup "jedi" nil t)
-(setq jedi:setup-keys t)
-(setq jedi:complete-on-dot t)
-
-(add-hook 'python-mode-hook 'jedi:setup)
-(add-hook 'python-mode-hook (lambda () 
-                              (jedi:setup)
-							  (setq jedi:server-command
-									(list emacs_py_interp 
-										  jedi:server-script)
-									)
-							  )
-		  )
-
  
 (defun python-mode-additional-keys ()
     "Key bindings to add to `python-mode'."
