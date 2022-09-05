@@ -15,7 +15,6 @@
 (global-set-key (kbd "M-r") 'replace-regexp)
 (global-set-key (kbd "C-x M-r") 'search-forward-regexp)
 (global-set-key (kbd "M-B") 'rename-buffer)
-(global-set-key (kbd "C-x j") 'python-django-open-project)
 
 (global-set-key (kbd "C-c C-p") 'python-shell-switch-to-shell)
 

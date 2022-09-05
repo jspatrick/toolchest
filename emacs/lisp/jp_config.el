@@ -4,6 +4,17 @@
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
 
+;OSX specific mods.  Put in an 'if' in case we change home systems
+(when (memq window-system '(mac ns))
+    (exec-path-from-shell-initialize)
+	(setq mac-option-key-is-meta nil)
+	(setq mac-command-key-is-meta t)
+	(setq mac-command-modifier 'meta)
+	(setq mac-option-modifier nil))
+
+
+(setq user-mail-address "jspatrick@gmail.com")
+
 ;;colors
 (add-to-list 'custom-theme-load-path "~/.emacs.d/lisp/themes/")
 (load-theme 'monokai)
